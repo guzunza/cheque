@@ -1,19 +1,24 @@
-const mysql = require('mysql2');
+const { Pool } = require('pg');
 
-const connection = mysql.createConnection({
-    host: process.env.DB_HOST || 'localhost', // Use DB_HOST do Render ou localhost
-    user: process.env.DB_USER || 'root',     // Use DB_USER do Render ou 'root'
-    password: process.env.DB_PASSWORD || 'Toby@2020', // Use DB_PASSWORD do Render ou sua senha
-    database: process.env.DB_NAME || 'sistema_cheques', // Use DB_NAME do Render ou seu banco de dados
-    port: process.env.DB_PORT || 3306  // Usar a porta do banco de dados, se necessário
+// Configuração da conexão ao banco de dados PostgreSQL
+const pool = new Pool({
+    host: process.env.DB_HOST || 'localhost', // Use o host do Render ou 'localhost'
+    user: process.env.DB_USER || 'root',     // Use o usuário do Render ou 'root'
+    password: process.env.DB_PASSWORD || 'UW8Vp8sfospFLIwJZm8A6LeTCpsK88G4', // Use a senha do Render
+    database: process.env.DB_NAME || 'sistema_cheques_7oot', // Nome do banco
+    port: process.env.DB_PORT || 5432,       // Porta padrão do PostgreSQL
+    ssl: process.env.DB_SSL ? { rejectUnauthorized: false } : false // Habilitar SSL no Render
 });
 
-connection.connect((err) => {
-    if (err) {
+// Testando a conexão
+(async () => {
+    try {
+        const client = await pool.connect();
+        console.log('Conexão com o banco de dados PostgreSQL bem-sucedida!');
+        client.release(); // Liberar a conexão
+    } catch (err) {
         console.error('Erro ao conectar ao banco de dados:', err);
-    } else {
-        console.log('Conexão com o banco de dados bem-sucedida!');
     }
-});
+})();
 
-module.exports = connection;
+module.exports = pool;
