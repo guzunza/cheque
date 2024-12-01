@@ -11,6 +11,7 @@ const express = require('express');
     const app = express();
     const PORT = 5002;
 
+
     // Configuração de sessão
     app.use(session({
     secret: 'segredo-super-seguro',
@@ -27,12 +28,13 @@ app.use(cors({
 }));
 
     app.use(express.json());
+    app.use(express.static('public'));
 
     app.use(bodyParser.json());
     app.use(express.static(path.join(__dirname, 'frontend')));
     app.use('/api', chequeRoutes); // Rota para as APIs de cheques
-
-        app.get('/favicon.ico', (req, res) => {
+    
+    app.get('/favicon.ico', (req, res) => {
         res.sendFile(path.join(__dirname, 'public', 'logoneo.png'));  // Caminho para o favicon
     });
     
@@ -206,36 +208,43 @@ app.get('/api/cheques/buscar-por-vencimento', async (req, res) => {
    
    
 
-   app.get('/api/cheques/relatorio', (req, res) => {
+app.get('/api/cheques/relatorio', (req, res) => {
     const { dataInicio, dataFim } = req.query;
 
-    const sql = `
-        SELECT cheque_numero, nome_beneficiario, data_emissao, data_vencimento, valor, status
-        FROM cheques
-        WHERE data_emissao BETWEEN ? AND ?
+    // Validações básicas para as datas
+    if (!dataInicio || !dataFim) {
+        return res.status(400).json({ success: false, message: 'Datas de início e fim são obrigatórias.' });
+    }
+
+    // Converter as datas para o formato Date (em caso de precisar de comparação no banco)
+    const dataInicioDate = new Date(dataInicio);
+    const dataFimDate = new Date(dataFim);
+
+    // Verificar se as datas são válidas
+    if (isNaN(dataInicioDate.getTime()) || isNaN(dataFimDate.getTime())) {
+        return res.status(400).json({ success: false, message: 'Datas fornecidas são inválidas.' });
+    }
+
+    // Construir a consulta SQL
+    const query = `
+        SELECT * FROM cheques
+        WHERE data_emissao >= $1 AND data_emissao <= $2
     `;
+    const values = [dataInicioDate, dataFimDate];
 
-    const values = [dataInicio, dataFim];
-
-    db.query(sql, values, (err, results) => {
+    db.query(query, values, (err, results) => {
         if (err) {
-            console.error('Erro ao buscar relatório de cheques:', err);
-            res.status(500).json({ error: 'Erro ao buscar relatório de cheques' });
-            return;
+            console.error('Erro ao consultar cheques:', err);
+            return res.status(500).json({ success: false, message: 'Erro ao consultar cheques.' });
         }
 
-        // Não sobrescreva o status que já vem do banco de dados
-        const chequesComStatus = results.map((cheque) => ({
-            ...cheque,
-            status: cheque.status, // Status real do banco
-        }));
+        if (results.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Nenhum cheque encontrado para o intervalo de datas informado.' });
+        }
 
-        console.log('Resultados encontrados:', chequesComStatus); // Log de depuração
-        res.json(chequesComStatus);
-    });
+        res.json({ success: true, cheques: results.rows });
+         });
 });
-
-    
     
     /* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
     const boletoRoutes = require('./routes/boleto');  // Certifique-se de que o arquivo de rotas de cheque está configurado corretamente
@@ -279,49 +288,55 @@ app.post('/api/boletos/cadastroboleto', (req, res) => {
 
 // Rota para buscar próximos boletos a vencer (a partir de hoje)
 app.get('/api/boletos/proximos-boletos', (req, res) => {
-    const sql = `
-        SELECT * FROM boletos 
-        WHERE data_vencimento = CURDATE() 
-        OR data_vencimento = CURDATE() + INTERVAL 1 DAY
-        ORDER BY data_vencimento ASC
-    `;
-
-    db.query(sql, (err, results) => {
+    const hoje = new Date();
+    const sql = 'SELECT * FROM boletos WHERE data_vencimento >= $1 ORDER BY data_vencimento ASC LIMIT 5';
+    
+    db.query(sql, [hoje], (err, result) => {
         if (err) {
-            console.error('Erro ao buscar boletos próximos ao vencimento:', err);
-            res.status(500).json({ error: 'Erro ao buscar boletos próximos ao vencimento' });
-            return;
+            console.error('Erro ao buscar próximos boletos:', err);
+            return res.status(500).json({ error: 'Erro ao carregar próximos boletos', details: err.message });
         }
-        res.json(results);
+
+        res.status(200).json(result.rows);
     });
 });
 
-app.get('/api/boletos/buscar-por-vencimento', (req, res) => {
-    const { dataVencimento } = req.query;
 
-    if (!dataVencimento) {
-        return res.status(400).json({ error: 'Data de vencimento é necessária' });
+app.get('/api/boletos/consultar-boleto-por-vencimento', (req, res) => {
+    const { dataVencimento } = req.query;
+    
+    // Converte a data de vencimento para o formato ISO se necessário
+    const dataFormatada = new Date(dataVencimento);
+    
+    // Verifica se a data é válida
+    if (isNaN(dataFormatada)) {
+        return res.status(400).json({ error: 'Data de vencimento inválida' });
     }
 
-    // Consulta ao banco de dados para buscar os boletos pela data de vencimento
-    const query = "SELECT * FROM boletos WHERE data_vencimento = ?";
-    db.query(query, [dataVencimento], (err, results) => {
+    // Consulta os boletos no banco com base na data de vencimento
+    const sql = 'SELECT * FROM boletos WHERE data_vencimento = $1';
+    
+    db.query(sql, [dataFormatada], (err, results) => {
         if (err) {
             console.error('Erro ao consultar boletos:', err);
-            return res.status(500).json({ error: 'Erro ao consultar boletos' });
+            res.status(500).json({ error: 'Erro ao consultar boletos' });
+            return;
         }
-
-        // Retorna os resultados para o frontend
-        res.json(results);
+        
+        res.status(200).json(results.rows); // Retorna os resultados para o frontend
     });
 });
-
 app.patch('/api/boletos/pagar/:id', (req, res) => {
     const boletoId = req.params.id;
 
+    // Verificar se o ID do boleto é um número válido
+    if (isNaN(boletoId)) {
+        return res.status(400).json({ success: false, message: 'ID do boleto inválido.' });
+    }
+
     // Verificar se o boleto existe e atualizar seu status para "pago"
-    const queryBuscar = 'SELECT * FROM boletos WHERE id = ?';
-    const queryAtualizar = 'UPDATE boletos SET status = ? WHERE id = ?';
+    const queryBuscar = 'SELECT * FROM boletos WHERE id = $1';
+    const queryAtualizar = 'UPDATE boletos SET status = $1 WHERE id = $2';
 
     db.query(queryBuscar, [boletoId], (err, results) => {
         if (err) {
@@ -329,11 +344,11 @@ app.patch('/api/boletos/pagar/:id', (req, res) => {
             return res.status(500).json({ success: false, message: 'Erro ao buscar o boleto.' });
         }
 
-        if (results.length === 0) {
+        if (results.rows.length === 0) {
             return res.status(404).json({ success: false, message: 'Boleto não encontrado.' });
         }
 
-        const boleto = results[0];
+        const boleto = results.rows[0];
 
         if (boleto.status === 'pago') {
             return res.status(400).json({ success: false, message: 'Boleto já foi pago.' });
@@ -350,6 +365,7 @@ app.patch('/api/boletos/pagar/:id', (req, res) => {
         });
     });
 });
+
 
 
 // Rota para checar se o servidor está online
@@ -534,25 +550,31 @@ app.get('/api/boletos/consultar-todos', (req, res) => {
 
 // Nova rota para consultar boletos por status
 app.get('/api/boletos/consultar-por-status', (req, res) => {
-    const { status } = req.query;  // Obtém o parâmetro de status
+    const { status } = req.query;
 
-    let query = "SELECT * FROM boletos";  // Consulta inicial sem filtro
-    let params = [];
+    // Se o status for "todos", então buscamos todos os boletos, sem filtro
+    const query = status === 'todos' 
+        ? 'SELECT * FROM boletos' 
+        : 'SELECT * FROM boletos WHERE status = $1';
 
-    if (status && status !== 'todos') {
-        query += " WHERE status = ?";
-        params.push(status);
-    }
+    // Se o status não for "todos", passamos o status na query SQL
+    const queryParams = status === 'todos' ? [] : [status];
 
-    db.query(query, params, (err, results) => {
+    db.query(query, queryParams, (err, results) => {
         if (err) {
             console.error('Erro ao consultar boletos:', err);
-            return res.status(500).json({ error: 'Erro ao consultar boletos' });
+            return res.status(500).json({ success: false, message: 'Erro ao consultar boletos.' });
         }
 
-        res.json(results);  // Retorna os boletos filtrados por status
+        if (results.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Nenhum boleto encontrado.' });
+        }
+
+        res.json({ success: true, boletos: results.rows });
     });
 });
+
+
 
 // Rota para deletar um boleto
 app.delete('/api/boletos/deletar/:id', (req, res) => {
