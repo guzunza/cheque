@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
 "scripts": {
-  "dev": "nodemon backend/server.js",
+  "migrate": "node ./migrations/setup.js",  // ou outro arquivo de migração
   "start": "node backend/server.js"
 }
 ,
