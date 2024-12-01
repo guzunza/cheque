@@ -5,7 +5,7 @@ const pool = new Pool({
   user: process.env.DB_USER || 'postgres', // Substitua pelo seu usuário do PostgreSQL
   host: process.env.DB_HOST || '127.0.0.1', // Substitua pelo host do banco de dados
   database: process.env.DB_NAME || 'sistema_cheques', // Substitua pelo nome do banco de dados
-  password: process.env.DB_PASSWORD || 'Toby@2020', // Substitua pela sua senha
+  password: process.env.DB_PASSWORD || '123', // Substitua pela sua senha
   port: process.env.DB_PORT || 5432, // Porta padrão do PostgreSQL
 });
 
