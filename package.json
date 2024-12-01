@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
 "scripts": {
-  "migrate": "node ./migrations/setup.js",  // ou outro arquivo de migração
+  "migrate": "node ./migrations/setup.js",  
   "start": "node backend/server.js"
 }
 ,
