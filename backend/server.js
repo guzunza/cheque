@@ -4,7 +4,8 @@ const connection = require('./db/connection');
 
 const app = require('./app'); 
 
-const PORT = process.env.PORT || 5002;
+const port = process.env.PORT || 10000;
+
 // Definindo uma rota para testar a conexão com o banco de dados
 app.get('/test', (req, res) => {
     connection.query('SELECT 1 + 1 AS resultado', (err, results) => {
@@ -17,6 +18,6 @@ app.get('/test', (req, res) => {
 });
 
 // Iniciando o servidor
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-});
+app.listen(port, () => {
+    console.log(`Servidor rodando na porta ${port}`);
+  });
