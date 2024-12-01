@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Cheques</title>
+    <link rel="stylesheet" href="styles.css"> <!-- CSS comum -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+</head>
+
+<body id="page-relatorio">
+    <header>
+        <nav class="header-container">
+            <h1>SISTEMA NEO</h1>
+            <img src="logoneo.png" alt="Logo da Empresa" class="logo">
+            <ul>
+                <li><a href="cadastro.html">Cadastro de Cheque</a></li>
+                <li><a href="relatorio.html">Relatório de Cheques</a></li>
+                <li><a href="estoque.html">Estoque</a></li>
+                <li><a href="consulta.html">Consulta</a></li>
+                <li><a href="consultaBoleto.html">Consulta Boletos</a></li>
+                <li><a href="boleto.html">Boleto</a></li>
+
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div id="relatorio" class="container">
+            <h2>Relatório de Cheques</h2>
+            <form id="relatorioForm">
+                <label for="data_inicio">Data de Início:</label>
+                <input type="date" id="data_inicio" name="data_inicio" required>
+
+                <label for="data_fim">Data de Fim:</label>
+                <input type="date" id="data_fim" name="data_fim" required>
+
+                <button type="submit">Gerar Relatório</button>
+                <button type="button" id="btnImprimir">Imprimir Relatório</button>
+
+
+            </form>
+
+            <!-- Mensagem de erro -->
+            <div id="errorMessage" style="color: red; display: none;">Erro ao carregar os dados. Tente novamente.</div>
+
+            <!-- Área para exibir resultados -->
+            <div id="resultados"></div>
+
+            <!-- Spinner para carregamento -->
+            <div id="loadingSpinner" style="display: none;">
+                <p>Carregando...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <br>
+        <p>&copy; 2024 Sistema Neo. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="relatorio.js"></script>
+</body>
+
+</html>

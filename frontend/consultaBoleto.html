@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Boletos</title>
+    <link rel="stylesheet" href="stylesConsultaBoleto.css">
+</head>
+
+<body>
+    <header>
+        <nav class="header-container">
+            <h1>SISTEMA NEO</h1>
+            <img src="logoneo.png" alt="Logo da Empresa" class="logo">
+            <ul>
+                <li><a href="cadastro.html">Cadastro de Cheque</a></li>
+                <li><a href="relatorio.html">Relatório de Cheques</a></li>
+                <li><a href="estoque.html">Estoque</a></li>
+                <li><a href="consulta.html">Consulta</a></li>
+                <li><a href="consultaBoleto.html">Consulta Boletos</a></li>
+                <li><a href="boleto.html">Boleto</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <h2>Consulta de Boletos</h2>
+        
+
+        <!-- Formulário para Filtrar Boletos -->
+
+                <label for="consultaStatus">Selecione o Status:</label>
+                <select id="consultaStatus">
+                    <option value="todos">Todos</option>
+                    <option value="pago">Pago</option>
+                    <option value="pendente">Pendente</option>
+                    <option value="vencido">Vencido</option>
+                </select>
+                <button onclick="consultarBoletos()">Filtrar</button>
+                <div id="resultados"></div>
+
+        <div id="form-edicao" style="display:none;">
+            <h3>Editar Boleto</h3>
+            <form onsubmit="atualizarBoleto(event)">
+                <input type="text" id="nome_pagador" placeholder="Nome do Pagador" required />
+                <input type="text" id="cpf_pagador" placeholder="CPF do Pagador" required />
+                <input type="text" id="endereco_pagador" placeholder="Endereço do Pagador" required />
+                <input type="number" id="valor" placeholder="Valor" required />
+                <input type="date" id="data_emissao" required />
+                <input type="date" id="data_vencimento" required />
+                <textarea id="descricao" placeholder="Descrição" required></textarea>
+                <select id="status" required>
+                    <option value="pago">Pago</option>
+                    <option value="pendente">Pendente</option>
+                    <option value="vencido">Vencido</option>
+                </select>
+                <button type="submit">Atualizar Boleto</button>
+            </form>
+        </div>
+        
+        
+        </div>
+        <footer>
+            <br><p>&copy; 2024 Sistema Neo. OpenSpace. Todos os direitos reservados.</p>
+        </footer>
+
+    <script src="scriptConsultaBoletos.js"></script>
+    
+</body>
+
+</html>

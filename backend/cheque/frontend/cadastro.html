@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Cheques</title>
+    <link rel="stylesheet" href="cadastro.css"> <!-- CSS comum -->
+
+    
+</head>
+<body id="page-cadastro">
+    <header>
+        <nav class="header-container">
+            <h1>SISTEMA NEO</h1>
+            <img src="logoneo.png" alt="Logo da Empresa" class="logo">
+            <ul>
+                <li><a href="pag.html">Inicio</a></li>
+                <li><a href="cadastro.html">Cadastro de Cheque</a></li>
+                <li><a href="relatorio.html">Relatório de Cheques</a></li>
+                <li><a href="estoque.html">Estoque</a></li>
+                <li><a href="consulta.html">Consulta</a></li>
+                <li><a href="boleto.html">Boleto</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="body">
+        <div id="cadastro" class="container">
+            <!-- Formulário de Cadastro de Cheque -->
+            <div class="form-container">
+                <h2>CADASTRO DE CHEQUE</h2>
+                <form id="chequeForm">
+                    <label for="cheque_numero">Cheque nº:</label>
+                    <input type="text" id="cheque_numero" name="cheque_numero" required>
+
+                    <label for="data_emissao">Data de Emissão:</label>
+                    <input type="date" id="data_emissao" name="data_emissao" required>
+
+                    <label for="nome_beneficiario">Nome do Beneficiário:</label>
+                    <input type="text" id="nome_beneficiario" name="nome_beneficiario" required>
+
+                    <label for="valor">Valor:</label>
+                    <input type="number" id="valor" step="0.01" name="valor" required>
+
+                    <label for="data_vencimento">Data de Vencimento:</label>
+                    <input type="date" id="data_vencimento" name="data_vencimento" required>
+
+                    <label for="descricao">Descrição:</label>
+                    <textarea name="descricao" id="descricao" rows="3"></textarea>
+
+                    <label for="empresa">Empresa Emitente:</label>
+                    <select id="empresa" name="empresa" required>
+                        <option value="">Selecione</option>
+                        <option value="escola">Escola</option>
+                        <option value="clinica">Clínica</option>
+                    </select>
+
+                    <button type="submit">Cadastrar Cheque</button>
+                </form>
+            </div>
+
+            <!-- Formulário de Consulta de Cheques -->
+            <div class="container2">
+                <div id="consultaPorData" class="container consultar-container">
+                <h2>CONSULTAR CHEQUES POR DATA</h2>
+                <label for="consultaData">Selecione uma data:</label>
+                <input type="date" id="consultaData" name="consultaData" />
+                <button id="consultar-btn">Consultar</button>
+
+                <div id="resultados"></div>
+            </div>
+        </div> 
+        
+        <!-- Próximos Cheques a Vencer -->
+        <div id="proximoCheque" class="container">
+            <h2>Próximos Cheques à Vencer</h2> <!-- Título fora da função -->
+            <!-- Aqui os cheques serão carregados dinamicamente -->
+            <div id="proximoCheque"></div>
+        </div>
+         
+    <footer>
+        <p>&copy; 2024 Sistema Neo. OpenSpace. Todos os direitos reservados.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

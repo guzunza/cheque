@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Boletos</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="header-container">
+            <h1>SISTEMA NEO</h1>
+            <img src="logoneo.png" alt="Logo da Empresa" class="logo">
+            <ul>
+                <li><a href="cadastro.html">Cadastro de Cheque</a></li>
+                <li><a href="relatorio.html">Relatório de Cheques</a></li>
+                <li><a href="estoque.html">Estoque</a></li>
+                <li><a href="consulta.html">Consulta</a></li>
+                <li><a href="consultaBoleto.html">Consulta Boletos</a></li>
+                <li><a href="boleto.html">Boleto</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="body">
+        <div id="cadastro" class="container">
+            <div class="form-container">
+                <h2>CADASTRO DE BOLETO</h2>
+                <form id="chequeForm">
+                    <label for="nome_pagador">Nome do Pagador:</label>
+                    <input type="text" id="nome_pagador" name="nome_pagador" required>
+                
+                    <label for="cpf_pagador">CPF do Pagador:</label>
+                    <input type="text" id="cpf_pagador" name="cpf_pagador" placeholder="000.000.000-00" required>
+                
+                    <label for="endereco_pagador">Endereço do Pagador:</label>
+                    <input type="text" id="endereco_pagador" name="endereco_pagador" required>
+                
+                    <label for="valor">Valor:</label>
+                    <input type="number" id="valor" step="0.01" name="valor" required>
+                
+                    <label for="data_emissao">Data de Emissão</label>
+                    <input type="date" id="data_emissao" name="data_emissao" required>
+
+                    <label for="data_vencimento">Data de Vencimento:</label>
+                    <input type="date" id="data_vencimento" name="data_vencimento" required>
+                
+                    <label for="descricao">Descrição:</label>
+                    <textarea name="descricao" id="descricao" rows="3"></textarea>
+                
+                    <button type="submit">Cadastrar Boleto</button>
+                </form>
+                
+                <div class="container2">
+                    <div id="consultaPorData" class="container consultar-container">
+                        <h2>CONSULTAR BOLETOS POR DATA</h2>
+                        <label for="consultaData">Selecione uma data:</label>
+                        <input type="date" id="consultaData">
+                        <button onclick="consultarBoletos()">Consultar</button>
+                        <div id="resultados"></div>
+                    </div>
+            </div>
+        </div>
+
+            
+
+            
+        </div>
+    </div>
+    <div id="consulta" class="container consultar-container">
+        <h2>PRÓXIMOS BOLETOS A VENCER</h2>
+        <div id="proximoBoleto"></div>
+    </div>
+    <footer>
+        <br><p>&copy; 2024 Sistema Neo. OpenSpace. Todos os direitos reservados.</p>
+    </footer>
+    <script src="scriptboleto.js"></script>
+</body>
+</html>

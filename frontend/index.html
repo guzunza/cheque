@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Cheque</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="header-container">
+        <img src="logoneo.png" alt="Logo da Empresa" class="logo">
+    </div>
+
+    <div class="container" id="container">
+        <!-- Formulário de Cadastro de Cliente -->
+        <div class="form-container sign-up">
+            <form id="registerForm">
+                <h1>Registrar</h1>
+                <input type="text" id="nomeCadastro" name="nome" placeholder="Nome completo" required>
+                <input type="email" id="emailCadastro" name="email" placeholder="Email" required>
+                <input type="password" id="senhaCadastro" name="senha" placeholder="Senha" required>
+                <button type="submit" id="registerBtn">Cadastrar</button>
+            </form>
+        </div>
+
+        <!-- Formulário de Login -->
+        <div class="form-container sign-in">
+            <form id="loginForm">
+                <h1>Entrar</h1>
+                <input type="email" id="email" name="email" placeholder="Email" required>
+                <input type="password" id="senha" name="senha" placeholder="Senha" required>
+                <button type="submit" id="loginBtn">Entrar</button>
+                <div id="login-message"></div>
+            </form>
+        </div>
+
+        <!-- Botões de alternância entre Login e Cadastro -->
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>Bem-vindo de volta!</h1>
+                    <p>Entre com seu perfil</p>
+                    <button id="login">Entrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>

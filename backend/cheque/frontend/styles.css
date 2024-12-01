@@ -1,0 +1,578 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #e0f7fa;
+    color: #333;
+    padding: 20px;
+}
+
+.header-container {
+    background-color: #67c0ce;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-container h1 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+.header-container ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.header-container a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+    transition: color 0.3s;
+}
+
+.header-container a:hover {
+    color: #cce7ff;
+}
+
+.logo {
+    width: 6%;
+    height: 100px;
+}
+
+.container {
+    max-width: 900px;
+    width: 100%;
+    background-color: white;
+    margin: 60px auto;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    font-size: 1.8em;
+    color: #08A5BC;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+form {
+    width: 100%;
+}
+
+label {
+    font-size: 1em;
+    color: #555;
+    display: block;
+    margin-bottom: 8px;
+}
+
+input[type="date"],
+button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #90caf9;
+    background-color: #ffffff;
+    color: #333;
+    font-size: 1em;
+}
+
+button {
+    background-color: #08A5BC;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.9s;
+}
+
+button:hover {
+    background-color: #01579b;
+}
+
+#resultados {
+    margin-top: 20px;
+    color: #cec3c3;
+    padding: 15px;
+    background-color: #fdf5f5;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+#resultados.empty {
+    background-color: #ffe0e0;
+    color: #08A5BC;
+    text-align: center;
+}
+
+footer {
+    text-align: center;
+    background-color: #67c0ce;
+    color: #ffffff;
+    height: 50px;
+    font-size: 0.9em;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+footer p {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 1.4em;
+    }
+
+    input[type="date"] {
+        font-size: 0.9em;
+    }
+
+    button {
+        font-size: 0.9em;
+    }
+
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    header ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+  /*relatorio  */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #e0f7fa;
+    color: #333;
+    padding: 20px;
+}
+
+header {
+    background-color: #67c0ce;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+header ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+header a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+    transition: color 0.3s;
+}
+
+header a:hover {
+    color: #cce7ff;
+}
+
+.logo {
+    width: 6%;
+    height: 100px;
+}
+
+.body {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.container {
+    max-width: 900px;
+    background-color: white;
+    width: 100%;
+    padding: 30px;
+    margin-top: 60px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    font-size: 1.8em;
+    color: #08A5BC;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-container,
+.product-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(186, 194, 219, 0.1);
+}
+
+label {
+    font-size: 1em;
+    color: #555;
+    display: block;
+    margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #90caf9;
+    background-color: #ffffff;
+    color: #333;
+    font-size: 1em;
+}
+
+button {
+    background-color: #08A5BC;
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.9s;
+}
+
+.tabela-cheques {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .tabela-cheques th, .tabela-cheques td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .tabela-cheques th {
+    background-color: #0277bd;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .tabela-cheques tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .tabela-cheques tr:hover {
+    background-color: #f1f1f1;
+  }
+
+button:hover {
+    background-color: #01579b;
+}
+
+#resultados {
+    margin-top: 20px;
+    color: #cec3c3;
+    background-color: #fdf5f5;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+#resultados.empty {
+    background-color: #ffe0e0;
+    color: #08A5BC;
+    text-align: center;
+}
+
+footer {
+    text-align: center;
+    background-color: #67c0ce;
+    color: #ffffff;
+    position: relative;
+    height: 50px;
+    font-size: 0.9em;
+    margin-top: 60px;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+footer h5 {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 1.4em;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
+    textarea {
+        font-size: 0.9em;
+    }
+
+    button {
+        font-size: 0.9em;
+    }
+
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    header ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+  
+/* Estilo base para o quadrado de cheque */
+.cheque-info {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #f9f9f9;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.clinica {
+    background-color: red;
+    color: white;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+.escola {
+    background-color: yellow;
+    color: black;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+.outros {
+    background-color: gray;
+    color: white;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+table, th, td {
+    border: 1px solid #b2dfdb;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    color: #006064;
+    font-size: 0.95em;
+}
+
+th {
+    background-color: #00796b;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+}
+
+td {
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #b2dfdb;
+}
+
+/* Formulário de Cadastro */
+form {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #004d40;
+}
+
+form input, form textarea, form button {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #b2dfdb;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+form button {
+    background-color: #00796b;
+    color: #ffffff;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #004d40;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 1.4em;
+    }
+
+    table, th, td {
+        font-size: 0.9em;
+    }
+
+    form {
+        width: 90%;
+    }
+
+    header h1 {
+        font-size: 1.5em;
+    }
+} 
+
+/* Estilo para a tabela de cheques */
+.tabela-cheques {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.tabela-cheques th, .tabela-cheques td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.tabela-cheques th {
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+.tabela-cheques tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tabela-cheques tr:hover {
+    background-color: #f1f1f1;
+}
+
+.tabela-cheques td {
+    color: #555;
+}
+
+.tabela-cheques td:last-child {
+    text-align: center;
+}
+#statusFilter {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 1%;
+    padding: 5px
+}
+
+
+/* Estilo para o modal */
+.modal {
+    display: none; /* Começa oculto */
+    position: fixed;
+    z-index: 1; /* Fica sobreposto a tudo */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4); /* Fundo semi-transparente */
+    overflow: auto;
+}
+
+/* Conteúdo do modal */
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
