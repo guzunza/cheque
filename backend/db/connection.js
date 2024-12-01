@@ -1,18 +1,25 @@
 const { Pool } = require('pg');
 
-// Configuração do banco de dados
+// Configuração da conexão com o PostgreSQL usando variáveis de ambiente ou valores padrão
 const pool = new Pool({
-  user: 'sistema_cheques_3pno_user',        // Usuário do banco
-  host: 'dpg-ct66a156147c738027d0-a',      // Host do banco (Render)
-  database: 'sistema_cheques_3pno',        // Nome do banco
-  password: 'g8lYOUIMXATqWgDOzToCAaBhs5Yn4g6', // Senha do banco
-  port: 5432,                              // Porta padrão do PostgreSQL
-  ssl: {
-    rejectUnauthorized: false,             // Necessário para conexões seguras
-  },
+  user: process.env.DB_USER || 'postgres', // Substitua pelo seu usuário do PostgreSQL
+  host: process.env.DB_HOST || '127.0.0.1', // Substitua pelo host do banco de dados
+  database: process.env.DB_NAME || 'sistema_cheques', // Substitua pelo nome do banco de dados
+  password: process.env.DB_PASSWORD || 'Toby@2020', // Substitua pela sua senha
+  port: process.env.DB_PORT || 5432, // Porta padrão do PostgreSQL
 });
 
-// Testando a conexão
-pool.connect()
-  .then(() => console.log('Conexão com o banco de dados bem-sucedida!'))
-  .catch((err) => console.error('Erro ao conectar ao banco de dados:', err.stack));
+// Teste de conexão inicial
+(async () => {
+  try {
+    const client = await pool.connect();
+    console.log('Conexão bem-sucedida ao PostgreSQL');
+    client.release(); // Libera o cliente de volta ao pool
+  } catch (err) {
+    console.error('Erro ao conectar ao banco de dados:', err.message);
+    process.exit(1); // Encerra o processo se a conexão falhar
+  }
+})();
+
+// Exporta o pool para uso em outras partes do projeto
+module.exports = pool;
