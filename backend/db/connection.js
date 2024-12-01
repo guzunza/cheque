@@ -1,24 +1,40 @@
-const { Pool } = require('pg');
+const mysql = require('mysql2');
 
-// Configuração da conexão ao banco de dados PostgreSQL
-const pool = new Pool({
-    host: process.env.DB_HOST || 'localhost', // Use o host do Render ou 'localhost'
-    user: process.env.DB_USER || 'root',     // Use o usuário do Render ou 'root'
-    password: process.env.DB_PASSWORD || 'UW8Vp8sfospFLIwJZm8A6LeTCpsK88G4', // Use a senha do Render
-    database: process.env.DB_NAME || 'sistema_cheques_7oot', // Nome do banco
-    port: process.env.DB_PORT || 5432,       // Porta padrão do PostgreSQL
-    ssl: process.env.DB_SSL ? { rejectUnauthorized: false } : false // Habilitar SSL no Render
-});
+// Função para criar uma conexão com o banco
+function createConnection() {
+    return mysql.createConnection({
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || 'Toby@2020',
+        database: process.env.DB_NAME || 'sistema_cheques',
+        port: process.env.DB_PORT || 3306,
+    });
+}
 
-// Testando a conexão
-(async () => {
-    try {
-        const client = await pool.connect();
-        console.log('Conexão com o banco de dados PostgreSQL bem-sucedida!');
-        client.release(); // Liberar a conexão
-    } catch (err) {
-        console.error('Erro ao conectar ao banco de dados:', err);
-    }
-})();
+// Manter a conexão ativa com reconexão automática
+function handleDisconnect(connection) {
+    connection.connect((err) => {
+        if (err) {
+            console.error('Erro ao conectar ao banco de dados:', err);
+            setTimeout(() => handleDisconnect(connection), 2000); // Tentar reconectar após 2 segundos
+        } else {
+            console.log('Conexão com o banco de dados bem-sucedida!');
+        }
+    });
 
-module.exports = pool;
+    connection.on('error', (err) => {
+        console.error('Erro na conexão do banco de dados:', err);
+        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+            console.log('Reconectando ao banco de dados...');
+            handleDisconnect(createConnection()); // Reconectar ao perder a conexão
+        } else {
+            throw err; // Outros erros não são recuperáveis
+        }
+    });
+}
+
+// Criar e gerenciar a conexão
+const connection = createConnection();
+handleDisconnect(connection);
+
+module.exports = connection;
