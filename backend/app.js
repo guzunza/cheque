@@ -34,60 +34,50 @@ app.use(cors({
     
 
   // Rota para cadastrar um cheque
-  app.post('/api/cheques/cadastrocheque', (req, res) => {
+  app.post('/api/cheques/cadastrocheque', async (req, res) => {
     const { cheque_numero, data_emissao, nome_beneficiario, valor, data_vencimento, descricao, empresa } = req.body;
 
-    // Verifica se todos os campos obrigatórios foram preenchidos
     if (!cheque_numero || !data_emissao || !nome_beneficiario || !valor || !data_vencimento || !empresa) {
         return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
     }
 
-    // Verificar se já existe um cheque com o mesmo número
-    const checkQuery = 'SELECT * FROM cheques WHERE cheque_numero = ?';
-    db.query(checkQuery, [cheque_numero], (err, results) => {
-        if (err) {
-            console.error('Erro ao verificar cheque:', err);
-            return res.status(500).json({ error: 'Erro ao verificar cheque no banco de dados.' });
-        }
+    try {
+        const checkQuery = 'SELECT * FROM cheques WHERE cheque_numero = $1';
+        const checkResult = await db.query(checkQuery, [cheque_numero]);
 
-        // Se já existir um cheque com o mesmo número, retorna um erro
-        if (results.length > 0) {
+        if (checkResult.rows.length > 0) {
             return res.status(400).json({ error: 'Já existe um cheque com este número.' });
         }
 
-        // Se não existir, insere o novo cheque
-        const sql = `INSERT INTO cheques (cheque_numero, data_emissao, nome_beneficiario, valor, data_vencimento, descricao, empresa) 
-                     VALUES (?, ?, ?, ?, ?, ?, ?)`;
-
-        const values = [cheque_numero, data_emissao, nome_beneficiario, valor, data_vencimento, descricao, empresa];
-
-        db.query(sql, values, (err, result) => {
-            if (err) {
-                console.error('Erro ao salvar cheque:', err);
-                return res.status(500).json({ error: 'Erro ao salvar cheque no banco de dados.' });
-            }
-            res.status(200).json({ message: 'Cheque cadastrado com sucesso!' });
-        });
-    });
+        const sql = `
+            INSERT INTO cheques (cheque_numero, data_emissao, nome_beneficiario, valor, data_vencimento, descricao, empresa, status)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, 'Pendente')
+        `;
+        await db.query(sql, [cheque_numero, data_emissao, nome_beneficiario, valor, data_vencimento, descricao, empresa]);
+        res.status(200).json({ message: 'Cheque cadastrado com sucesso!' });
+    } catch (error) {
+        console.error('Erro ao cadastrar cheque:', error);
+        res.status(500).json({ error: 'Erro ao cadastrar cheque no banco de dados.' });
+    }
 });
        
 // Marcar cheque como compensado ele sai de PRÓXIMOS CHEQUES A VENCER
-app.patch('/api/cheques/compensar/:numero', (req, res) => {
+app.patch('/api/cheques/compensar/:numero', async (req, res) => {
     const chequeNumero = req.params.numero;
-    const sql = `UPDATE cheques SET status = 'Compensado' WHERE cheque_numero = ?`;
 
-    db.query(sql, [chequeNumero], (err, results) => {
-        if (err) {
-            console.error('Erro ao atualizar o status do cheque:', err);
-            return res.status(500).json({ success: false, message: 'Erro ao marcar cheque como compensado.' });
-        }
+    try {
+        const sql = 'UPDATE cheques SET status = $1 WHERE cheque_numero = $2';
+        const result = await db.query(sql, ['Compensado', chequeNumero]);
 
-        if (results.affectedRows > 0) {
+        if (result.rowCount > 0) {
             res.json({ success: true, message: 'Cheque marcado como compensado com sucesso!' });
         } else {
             res.status(404).json({ success: false, message: 'Cheque não encontrado.' });
         }
-    });
+    } catch (error) {
+        console.error('Erro ao atualizar status do cheque:', error);
+        res.status(500).json({ success: false, message: 'Erro ao marcar cheque como compensado.' });
+    }
 });
 
 // Rota para atualizar o status do cheque
@@ -193,34 +183,22 @@ app.patch('/api/cheques/atualizar-status/:numero', (req, res) => {
 
     
 // Rota para consultar cheques por data de vencimento
-app.get('/api/cheques/buscar-por-vencimento', (req, res) => {
+app.get('/api/cheques/buscar-por-vencimento', async (req, res) => {
     const { dataVencimento } = req.query;
 
     if (!dataVencimento) {
         return res.status(400).json({ error: 'Por favor, forneça uma data de vencimento.' });
     }
 
-    // Usando moment.js para garantir que a data esteja no formato correto
-    const dataVencimentoFormatada = moment(dataVencimento, 'YYYY-MM-DD').format('YYYY-MM-DD');
-    console.log('Data formatada recebida:', dataVencimentoFormatada); // Log para depuração
-
-    // Consulta SQL para cheques com a data de vencimento fornecida
-    const query = 'SELECT * FROM cheques WHERE DATE(data_vencimento) = ?';
-    
-    db.query(query, [dataVencimentoFormatada], (err, results) => {
-        if (err) {
-            console.error('Erro ao consultar cheques:', err);
-            return res.status(500).json({ error: 'Erro ao consultar cheques.' });
-        }
-
-        if (results.length > 0) {
-            res.json(results); // Retorna os resultados
-        } else {
-            res.status(404).json({ message: 'Nenhum cheque encontrado para a data informada.' });
-        }
-    });
+    try {
+        const sql = 'SELECT * FROM cheques WHERE DATE(data_vencimento) = $1';
+        const { rows } = await db.query(sql, [dataVencimento]);
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Erro ao consultar cheques:', error);
+        res.status(500).json({ error: 'Erro ao consultar cheques.' });
+    }
 });
-
    
    
 
@@ -661,51 +639,27 @@ app.post('/api/cheques', (req, res) => {
 
 
 // Listar cheques próximos ao vencimento
-app.get('/api/cheques/proximos', (req, res) => {
-    const hoje = new Date();
-    const amanha = new Date();
-    amanha.setDate(hoje.getDate() + 1);
+app.get('/api/cheques/proximos', async (req, res) => {
+    try {
+        const amanhaInicio = moment().add(1, 'days').startOf('day').toISOString();
+        const amanhaFim = moment().add(1, 'days').endOf('day').toISOString();
 
-    // Ajustar a data para garantir que estamos pegando apenas o dia (sem considerar hora, minuto, segundo)
-    const amanhaInicio = new Date(amanha.setHours(0, 0, 0, 0)); // Início do dia de amanhã
-    const amanhaFim = new Date(amanha.setHours(23, 59, 59, 999)); // Fim do dia de amanhã
+        console.log('Datas para próximos cheques:', { amanhaInicio, amanhaFim });
 
-    // Ajustando a consulta para buscar todos os cheques que vencem amanhã
-    const sql = `
-        SELECT * FROM cheques 
-        WHERE status = 'Pendente' AND data_vencimento BETWEEN ? AND ? 
-        ORDER BY data_vencimento ASC
-    `;
-    
-    db.query(sql, [amanhaInicio.toISOString(), amanhaFim.toISOString()], (err, results) => {
-        if (err) {
-            console.error('Erro ao carregar próximos cheques:', err);
-            return res.status(500).json({ success: false, message: 'Erro ao carregar próximos cheques' });
-        }
+        const sql = `
+            SELECT * FROM cheques
+            WHERE status = 'Pendente'
+              AND data_vencimento >= $1
+              AND data_vencimento <= $2
+            ORDER BY data_vencimento ASC
+        `;
 
-        // Atualiza automaticamente os cheques que passaram da data de vencimento
-        const hoje = new Date(); // Esta linha é mantida fora do loop
-
-        results.forEach((cheque) => {
-            const dataVencimento = new Date(cheque.data_vencimento);
-
-            // Verifica se a data de vencimento já passou e o status está "Pendente"
-            if (cheque.status === 'Pendente' && dataVencimento < hoje) {
-                const updateSql = `UPDATE cheques SET status = 'Atrasado' WHERE cheque_numero = ?`;
-
-                db.query(updateSql, [cheque.cheque_numero], (err, updateResults) => {
-                    if (err) {
-                        console.error('Erro ao atualizar o status para Atrasado:', err);
-                    } else {
-                        console.log(`Cheque ${cheque.cheque_numero} atualizado para Atrasado.`);
-                    }
-                });
-            }
-        });
-
-        // Retorna os cheques próximos ao vencimento
-        res.json({ success: true, cheques: results });
-    });
+        const { rows } = await db.query(sql, [amanhaInicio, amanhaFim]);
+        res.status(200).json({ success: true, cheques: rows });
+    } catch (error) {
+        console.error('Erro ao carregar próximos cheques:', error);
+        res.status(500).json({ success: false, message: 'Erro ao carregar próximos cheques', error: error.message });
+    }
 });
 
 
@@ -723,6 +677,7 @@ app.post('/api/cheques/marcar-compensado', (req, res) => {
         res.status(200).json({ success: true, message: 'Cheque marcado como compensado' });
     });
 });
+
 
 
 module.exports = app;
