@@ -31,6 +31,10 @@ app.use(cors({
     app.use(bodyParser.json());
     app.use(express.static(path.join(__dirname, 'frontend')));
     app.use('/api', chequeRoutes); // Rota para as APIs de cheques
+
+        app.get('/favicon.ico', (req, res) => {
+        res.sendFile(path.join(__dirname, 'public', 'logoneo.png'));  // Caminho para o favicon
+    });
     
 
   // Rota para cadastrar um cheque
